@@ -1,7 +1,5 @@
 package src.Managers;
 
-import java.util.ArrayList;
-
 public class BoardPosition {
     private int xPosition;
     private int yPosition;
