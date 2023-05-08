@@ -1,35 +1,38 @@
-package src.Managers;
+package src.managers;
 
 import java.util.*;
 import java.util.stream.IntStream;
 
 public class BoardManager {
-    public BoardManager() {
+    private int boardSize;
+    private final int[][] board;
+    private final HashMap<String, BoardPosition> boardPositions = new HashMap<>();
+
+    public BoardManager(int boardSize) {
+        this.boardSize = boardSize;
+        board = new int[boardSize][boardSize];
+
         resetBoard();
     }
 
-    private int boardSize = 5;
-    private final int[][] board = new int[boardSize][boardSize];
-    private final HashMap<String, BoardPosition> boardPositions = new HashMap<>();
-
     public BoardPosition getBoardPosition(String boardValue) {
-        return boardPositions.get(boardValue);
+        return this.boardPositions.get(boardValue);
     }
 
     public String getBoard() {
-        return Arrays.deepToString(board);
+        return Arrays.deepToString(this.board);
     }
 
     public int getBoardSize() {
-        return boardSize;
+        return this.boardSize;
     }
 
     public int getBoardValue(int xPosition, int yPosition) {
-        return board[xPosition][yPosition];
+        return this.board[xPosition][yPosition];
     }
 
     public BoardPosition getEmptyPositions() {
-        return boardPositions.get("0");
+        return this.boardPositions.get("0");
     }
 
     public void setBoardPositions(Integer boardValue, BoardPosition boardPosition) {
@@ -47,10 +50,10 @@ public class BoardManager {
 
         IntStream.range(0, totalBoardSize).forEach(defaultValuesList::add);
 
-        iniatializeBoardPositions(defaultValuesList);
+        initializeBoardPositions(defaultValuesList);
     }
 
-    private void iniatializeBoardPositions(ArrayList<Integer> defaultValues) {
+    private void initializeBoardPositions(ArrayList<Integer> defaultValues) {
         Random rand = new Random();
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {

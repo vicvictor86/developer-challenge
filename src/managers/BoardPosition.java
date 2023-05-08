@@ -1,4 +1,4 @@
-package src.Managers;
+package src.managers;
 
 public class BoardPosition {
     private int xPosition;
