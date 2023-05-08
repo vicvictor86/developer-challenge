@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 
 public class JogoDosOito extends JFrame implements KeyListener {
     private final BoardManager boardManager = new BoardManager();
-    private final JButton[][] buttons = new JButton[3][3];
+    private final JButton[][] buttons = new JButton[boardManager.getBoardSize()][boardManager.getBoardSize()];
 
     public JogoDosOito() {
         super("Jogo dos Oito");
@@ -22,8 +22,8 @@ public class JogoDosOito extends JFrame implements KeyListener {
         setSize(300, 300);
         setLayout(new GridLayout(4, 3));
 
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < boardManager.getBoardSize(); i++) {
+            for (int j = 0; j < boardManager.getBoardSize(); j++) {
                 JButton button = new JButton();
                 button.setFont(new Font("Arial", Font.BOLD, 36));
                 button.addActionListener(e -> onClick(button));
@@ -58,44 +58,39 @@ public class JogoDosOito extends JFrame implements KeyListener {
         var firstButtonPosition = boardManager.getBoardPosition(buttonClicked.getText());
 
         changeButtonsPositions(firstButtonPosition.getXPosition(), firstButtonPosition.getYPosition());
-        System.out.println(boardManager.getBoard());
+
+        boolean isOrdered = boardManager.isOrdered();
+        if (isOrdered) {
+            gameFinished();
+        }
     }
 
     public static void main(String[] args) {
         new JogoDosOito();
     }
 
-    private boolean jogoConcluido() {
-        int count = 1;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (boardManager.getBoardValue(i, j) != count % 9) {
-                    return false;
-                }
-                count++;
-            }
-        }
-        return true;
+    private void gameFinished() {
+        //Tela de vitória
+        System.out.println("Game finished");
     }
 
     private void changeButtonsPositions(int buttonXPosition, int buttonYPosition) {
         boolean hasEmptySpaceInSurround = boardManager.hasEmptySpaceInSurround(buttonXPosition, buttonYPosition);
 
-        System.out.println(hasEmptySpaceInSurround);
         if (hasEmptySpaceInSurround) {
             int value = boardManager.getBoardValue(buttonXPosition, buttonYPosition);
+            BoardPosition emptyPosition = boardManager.getEmptyPositions();
 
+            boardManager.setBoardPositions(value, emptyPosition);
             boardManager.setBoardPositions(0, new BoardPosition(buttonXPosition, buttonYPosition));
-            boardManager.setBoardPositions(value, boardManager.getEmptyPositions());
-            boardManager.setEmptyPosition(new BoardPosition(buttonXPosition, buttonYPosition));
 
             updateBoard();
         }
     }
 
     private void updateBoard() {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < boardManager.getBoardSize(); i++) {
+            for (int j = 0; j < boardManager.getBoardSize(); j++) {
                 JButton button = buttons[i][j];
                 int value = boardManager.getBoardValue(i, j);
                 button.setText(value == 0 ? "" : String.valueOf(value));

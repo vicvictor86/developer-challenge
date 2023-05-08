@@ -21,4 +21,12 @@ public class BoardPosition {
         this.xPosition = xPosition;
         this.yPosition = yPosition;
     }
+
+    @Override
+    public String toString() {
+        return "BoardPosition { " +
+                "xPosition = " + xPosition +
+                ", yPosition = " + yPosition +
+                " }";
+    }
 }
