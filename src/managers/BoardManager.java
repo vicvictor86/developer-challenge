@@ -45,8 +45,6 @@ public class BoardManager {
         IntStream.range(0, totalBoardSize).forEach(defaultValuesList::add);
 
         initializeBoardPositions(defaultValuesList);
-
-        //Falta centralizar a criação da janela no meio da tela
     }
 
     private void initializeBoardPositions(ArrayList<Integer> defaultValues) {

@@ -125,7 +125,6 @@ public class Game extends JFrame implements KeyListener {
             clickQuantityLabel.setText("Tentativas: " + gameManager.getClickQuantity());
         }
 
-        gameFinished();
         boolean isOrdered = boardManager.isOrdered();
         if (isOrdered) {
             gameFinished();
