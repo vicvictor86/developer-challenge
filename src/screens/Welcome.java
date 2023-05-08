@@ -8,25 +8,28 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class Welcome extends JFrame implements KeyListener {
-    private JComboBox<Integer> sizeOptions;
+    private final JComboBox<Integer> sizeOptions;
 
     public Welcome(ScreenManager screenManager) {
         super("Welcome");
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         setSize(300, 300);
+        setLocationRelativeTo(null);
+
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
-        JLabel welcomelabel = new JLabel("Bem vindo ao jogo dos oito");
-        welcomelabel.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel welcomeLabel = new JLabel("Bem vindo ao jogo dos oito");
+        welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.CENTER;
         c.weightx = 1;
         c.gridwidth = 2;
         c.gridx = 0;
         c.gridy = 0;
-        add(welcomelabel, c);
+        add(welcomeLabel, c);
 
         JLabel boardSizeLabel = new JLabel("Tamanho do jogo");
         c.weightx = 0.75;

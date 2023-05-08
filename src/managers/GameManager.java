@@ -6,10 +6,11 @@ import java.awt.*;
 public class GameManager {
     private final int screenHeight;
     private final int screenWidth;
+
     private int clickQuantity = 0;
+
     private int seconds = 0;
     private int secondsToResolve;
-
     private Thread coutingThread;
 
     public BoardManager boardManager;
@@ -41,6 +42,10 @@ public class GameManager {
         clickQuantity++;
     }
 
+    public int getSeconds() {
+        return this.seconds;
+    }
+
     public int getSecondsToResolve() {
         return this.secondsToResolve;
     }
@@ -52,12 +57,12 @@ public class GameManager {
                     Thread.sleep(1000);
                     this.seconds++;
                     timeLabel.setText("Tempo: " + this.seconds + " segs");
-                    System.out.println(this.seconds);
                 } catch (InterruptedException e) {
                     break;
                 }
             }
         });
+
         coutingThread.start();
     }
 
@@ -68,4 +73,10 @@ public class GameManager {
         this.seconds = 0;
     }
 
+    public void restartGame() {
+        this.clickQuantity = 0;
+        this.seconds = 0;
+        this.secondsToResolve = 0;
+        this.boardManager.resetBoard();
+    }
 }

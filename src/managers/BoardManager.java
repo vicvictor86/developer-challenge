@@ -1,26 +1,24 @@
 package src.managers;
 
+import src.entities.BoardPosition;
+
 import java.util.*;
 import java.util.stream.IntStream;
 
 public class BoardManager {
-    private int boardSize;
+    private final int boardSize;
     private final int[][] board;
     private final HashMap<String, BoardPosition> boardPositions = new HashMap<>();
 
     public BoardManager(int boardSize) {
         this.boardSize = boardSize;
-        board = new int[boardSize][boardSize];
+        this.board = new int[boardSize][boardSize];
 
         resetBoard();
     }
 
     public BoardPosition getBoardPosition(String boardValue) {
         return this.boardPositions.get(boardValue);
-    }
-
-    public String getBoard() {
-        return Arrays.deepToString(this.board);
     }
 
     public int getBoardSize() {
@@ -40,10 +38,6 @@ public class BoardManager {
         boardPositions.put(boardValue.toString(), boardPosition);
     }
 
-    public void setBoardSize(int boardSize) {
-        this.boardSize = boardSize;
-    }
-
     public void resetBoard() {
         ArrayList<Integer> defaultValuesList = new ArrayList<>();
         int totalBoardSize = this.boardSize * this.boardSize;
@@ -51,6 +45,8 @@ public class BoardManager {
         IntStream.range(0, totalBoardSize).forEach(defaultValuesList::add);
 
         initializeBoardPositions(defaultValuesList);
+
+        //Falta centralizar a criação da janela no meio da tela
     }
 
     private void initializeBoardPositions(ArrayList<Integer> defaultValues) {
@@ -89,14 +85,32 @@ public class BoardManager {
             for (int j = 0; j < boardSize; j++) {
                 int currentValue = board[i][j];
 
+                if (currentValue == 0 && (i != boardSize - 1 || j != boardSize - 1)) {
+                    return false;
+                }
+
                 if (currentValue != 0 && currentValue > highestValue) {
                     highestValue = currentValue;
-                } else if (currentValue == 0 && (i != boardSize - 1 || j != boardSize - 1)) {
+                } else {
                     return false;
                 }
             }
         }
 
         return true;
+    }
+
+    public boolean changeButtonsPositions(int buttonXPosition, int buttonYPosition) {
+        boolean hasEmptySpaceInSurround = this.hasEmptySpaceInSurround(buttonXPosition, buttonYPosition);
+
+        if (hasEmptySpaceInSurround) {
+            int value = this.getBoardValue(buttonXPosition, buttonYPosition);
+            BoardPosition emptyPosition = this.getEmptyPositions();
+
+            this.setBoardPositions(value, emptyPosition);
+            this.setBoardPositions(0, new BoardPosition(buttonXPosition, buttonYPosition));
+        }
+
+        return hasEmptySpaceInSurround;
     }
 }

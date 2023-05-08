@@ -1,7 +1,6 @@
-package src;
+package src.screens;
 
 import src.managers.BoardManager;
-import src.managers.BoardPosition;
 import src.managers.GameManager;
 import src.managers.ScreenManager;
 
@@ -14,7 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-public class JogoDosOito extends JFrame implements KeyListener {
+public class Game extends JFrame implements KeyListener {
     private final ScreenManager screenManager;
     private final GameManager gameManager;
     private final BoardManager boardManager;
@@ -23,23 +22,24 @@ public class JogoDosOito extends JFrame implements KeyListener {
     private final JLabel clickQuantityLabel = new JLabel("Tentativas: 0");
     private final JLabel timeLabel = new JLabel("Tempo: 0 segs");
 
-    public JogoDosOito(ScreenManager screenManager) {
+    public Game(ScreenManager screenManager) {
         super("Jogo dos Oito");
         this.screenManager = screenManager;
         this.gameManager = screenManager.getGameManager();
-
         this.boardManager = gameManager.boardManager;
 
         this.buttons = new JButton[boardManager.getBoardSize()][boardManager.getBoardSize()];
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(gameManager.getScreenWidth(), gameManager.getScreenHeight());
-        setLayout(new GridLayout(boardManager.getBoardSize() + 2, boardManager.getBoardSize()));
 
-        addLabels();
+        setSize(gameManager.getScreenWidth(), gameManager.getScreenHeight());
+        setLocationRelativeTo(null);
+
+        setLayout(new GridLayout(boardManager.getBoardSize() + 2, boardManager.getBoardSize()));
 
         gameManager.startCounting(this.timeLabel);
 
+        addLabels();
         addButtons();
 
         addKeyListener(this);
@@ -54,18 +54,15 @@ public class JogoDosOito extends JFrame implements KeyListener {
         if (boardManager.getBoardSize() % 2 != 0) {
             add(timeLabel);
             add(clickQuantityLabel);
-            for (int i = 0; i < boardManager.getBoardSize() - 2; i++) {
-                add(new JLabel(""));
-            }
+
+            addWhiteSpaces(boardManager.getBoardSize() - 2);
         } else {
-            for (int i = 0; i < boardManager.getBoardSize() / 2 - 1; i++) {
-                add(new JLabel(""));
-            }
+            addWhiteSpaces(boardManager.getBoardSize() / 2 - 1);
+
             add(timeLabel);
             add(clickQuantityLabel);
-            for (int i = 0; i < boardManager.getBoardSize() / 2 - 1; i++) {
-                add(new JLabel(""));
-            }
+
+            addWhiteSpaces(boardManager.getBoardSize() / 2 - 1);
         }
     }
 
@@ -90,30 +87,23 @@ public class JogoDosOito extends JFrame implements KeyListener {
         addBottomButtons(restartButton, backButton);
     }
 
-    private void addBottomButtons(JButton restartButton, JButton backButton) {
-        for (int i = 0; i < boardManager.getBoardSize() / 2 - 1; i++) {
+    private void addWhiteSpaces(int quantity) {
+        for (int i = 0; i < quantity; i++) {
             add(new JLabel(""));
         }
+    }
+
+    private void addBottomButtons(JButton restartButton, JButton backButton) {
+        addWhiteSpaces(boardManager.getBoardSize() / 2 - 1);
+
         add(backButton);
         add(restartButton);
+
         if (boardManager.getBoardSize() % 2 != 0) {
-            for (int i = 0; i < boardManager.getBoardSize() / 2; i++) {
-                add(new JLabel(""));
-            }
+            addWhiteSpaces(boardManager.getBoardSize() / 2);
         } else {
-            for (int i = 0; i < boardManager.getBoardSize() / 2 - 1; i++) {
-                add(new JLabel(""));
-            }
+            addWhiteSpaces(boardManager.getBoardSize() / 2 - 1);
         }
-    }
-
-    public void keyPressed(KeyEvent e) {
-    }
-
-    public void keyTyped(KeyEvent e) {
-    }
-
-    public void keyReleased(KeyEvent e) {
     }
 
     @Override
@@ -125,9 +115,12 @@ public class JogoDosOito extends JFrame implements KeyListener {
     private void onClick(JButton buttonClicked) {
         var firstButtonPosition = boardManager.getBoardPosition(buttonClicked.getText());
 
-        boolean isValidMove = changeButtonsPositions(firstButtonPosition.getXPosition(), firstButtonPosition.getYPosition());
+        if (firstButtonPosition == null) return;
+
+        boolean isValidMove = boardManager.changeButtonsPositions(firstButtonPosition.getXPosition(), firstButtonPosition.getYPosition());
 
         if (isValidMove) {
+            updateBoard();
             gameManager.addClick();
             clickQuantityLabel.setText("Tentativas: " + gameManager.getClickQuantity());
         }
@@ -140,23 +133,8 @@ public class JogoDosOito extends JFrame implements KeyListener {
     }
 
     private void gameFinished() {
+        gameManager.stopCounting();
         screenManager.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Win"));
-    }
-
-    private boolean changeButtonsPositions(int buttonXPosition, int buttonYPosition) {
-        boolean hasEmptySpaceInSurround = boardManager.hasEmptySpaceInSurround(buttonXPosition, buttonYPosition);
-
-        if (hasEmptySpaceInSurround) {
-            int value = boardManager.getBoardValue(buttonXPosition, buttonYPosition);
-            BoardPosition emptyPosition = boardManager.getEmptyPositions();
-
-            boardManager.setBoardPositions(value, emptyPosition);
-            boardManager.setBoardPositions(0, new BoardPosition(buttonXPosition, buttonYPosition));
-
-            updateBoard();
-        }
-
-        return hasEmptySpaceInSurround;
     }
 
     private void updateBoard() {
@@ -169,9 +147,23 @@ public class JogoDosOito extends JFrame implements KeyListener {
         }
     }
 
-    private void restartGame() {
-        System.out.println("restart");
-        boardManager.resetBoard();
+    private void updateUI() {
         updateBoard();
+        clickQuantityLabel.setText("Tentativas: " + gameManager.getClickQuantity());
+        timeLabel.setText("Tempo: " + gameManager.getSeconds() + " segs");
+    }
+
+    private void restartGame() {
+        gameManager.restartGame();
+        updateUI();
+    }
+
+    public void keyPressed(KeyEvent e) {
+    }
+
+    public void keyTyped(KeyEvent e) {
+    }
+
+    public void keyReleased(KeyEvent e) {
     }
 }

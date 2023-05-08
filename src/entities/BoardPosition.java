@@ -1,8 +1,8 @@
-package src.managers;
+package src.entities;
 
 public class BoardPosition {
-    private int xPosition;
-    private int yPosition;
+    private final int xPosition;
+    private final int yPosition;
 
     public BoardPosition(int xPosition, int yPosition) {
         this.xPosition = xPosition;
@@ -15,11 +15,6 @@ public class BoardPosition {
 
     public int getYPosition() {
         return this.yPosition;
-    }
-
-    public void setPositions(int xPosition, int yPosition) {
-        this.xPosition = xPosition;
-        this.yPosition = yPosition;
     }
 
     @Override

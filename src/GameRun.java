@@ -2,8 +2,8 @@ package src;
 
 import src.managers.ScreenManager;
 
-public class Game {
+public class GameRun {
     public static void main(String[] args) {
-        ScreenManager screenManager = new ScreenManager();
+        new ScreenManager();
     }
 }

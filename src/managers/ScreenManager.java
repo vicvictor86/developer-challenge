@@ -1,6 +1,6 @@
 package src.managers;
 
-import src.JogoDosOito;
+import src.screens.Game;
 import src.screens.Welcome;
 import src.screens.Winning;
 
@@ -12,6 +12,7 @@ import java.util.HashMap;
 public class ScreenManager implements ActionListener {
     private GameManager gameManager;
     private final HashMap<String, JFrame> screens = new HashMap<>();
+
     public ScreenManager() {
         screens.put("Welcome", new Welcome(this));
     }
@@ -29,18 +30,20 @@ public class ScreenManager implements ActionListener {
             case "Começar" -> {
                 welcome.setVisible(false);
                 int boardSize = ((Welcome) welcome).getOptionSelected();
+
                 this.gameManager = new GameManager(boardSize);
-                screens.put("PlayGame", new JogoDosOito(this));
+                screens.put("PlayGame", new Game(this));
             }
             case "Voltar" -> {
                 screens.get("PlayGame").dispose();
                 welcome.setVisible(true);
             }
             case "Win" -> {
-                screens.get("PlayGame").dispose();
+                screens.get("PlayGame").setEnabled(false);
                 screens.put("Win", new Winning(this));
             }
             case "Tela inicial" -> {
+                screens.get("PlayGame").dispose();
                 screens.get("Win").dispose();
                 welcome.setVisible(true);
             }

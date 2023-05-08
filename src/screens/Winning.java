@@ -12,7 +12,10 @@ public class Winning extends JFrame implements KeyListener {
         super("Welcome");
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         setSize(300, 300);
+        setLocationRelativeTo(null);
+
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
