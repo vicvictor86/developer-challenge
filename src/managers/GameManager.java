@@ -8,6 +8,7 @@ public class GameManager {
     private final int screenWidth;
     private int clickQuantity = 0;
     private int seconds = 0;
+    private int secondsToResolve;
 
     private Thread coutingThread;
 
@@ -36,12 +37,12 @@ public class GameManager {
         return this.screenWidth;
     }
 
-    public void restartGame() {
-        clickQuantity = 0;
-    }
-
     public void addClick() {
         clickQuantity++;
+    }
+
+    public int getSecondsToResolve() {
+        return this.secondsToResolve;
     }
 
     public void startCounting(JLabel timeLabel) {
@@ -62,6 +63,8 @@ public class GameManager {
 
     public void stopCounting() {
         this.coutingThread.interrupt();
+
+        this.secondsToResolve = this.seconds;
         this.seconds = 0;
     }
 

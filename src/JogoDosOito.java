@@ -4,9 +4,9 @@ import src.managers.BoardManager;
 import src.managers.BoardPosition;
 import src.managers.GameManager;
 import src.managers.ScreenManager;
-import src.screens.Welcome;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -132,6 +132,7 @@ public class JogoDosOito extends JFrame implements KeyListener {
             clickQuantityLabel.setText("Tentativas: " + gameManager.getClickQuantity());
         }
 
+        gameFinished();
         boolean isOrdered = boardManager.isOrdered();
         if (isOrdered) {
             gameFinished();
@@ -139,9 +140,7 @@ public class JogoDosOito extends JFrame implements KeyListener {
     }
 
     private void gameFinished() {
-        //Tela de vitória
-        System.out.println("Game finished");
-        System.out.println("You finish with: " + gameManager.getClickQuantity() + " tries");
+        screenManager.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Win"));
     }
 
     private boolean changeButtonsPositions(int buttonXPosition, int buttonYPosition) {

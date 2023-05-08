@@ -1,13 +1,12 @@
 package src.managers;
 
-import src.Game;
 import src.JogoDosOito;
 import src.screens.Welcome;
+import src.screens.Winning;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 import java.util.HashMap;
 
 public class ScreenManager implements ActionListener {
@@ -27,23 +26,25 @@ public class ScreenManager implements ActionListener {
         JFrame welcome = screens.get("Welcome");
 
         switch (buttonText) {
-            case "Começar":
-                System.out.println("Ir para tela de jogo");
-
+            case "Começar" -> {
                 welcome.setVisible(false);
-                int boardSize = ((Welcome)welcome).getOptionSelected();
+                int boardSize = ((Welcome) welcome).getOptionSelected();
                 this.gameManager = new GameManager(boardSize);
-
                 screens.put("PlayGame", new JogoDosOito(this));
-                break;
-            case "Voltar":
-                System.out.println("Voltar pra tela inicial");
+            }
+            case "Voltar" -> {
                 screens.get("PlayGame").dispose();
                 welcome.setVisible(true);
-                break;
-            default:
-                System.out.println("Default");
-                break;
+            }
+            case "Win" -> {
+                screens.get("PlayGame").dispose();
+                screens.put("Win", new Winning(this));
+            }
+            case "Tela inicial" -> {
+                screens.get("Win").dispose();
+                welcome.setVisible(true);
+            }
+            default -> System.out.println("Default");
         }
     }
 }
