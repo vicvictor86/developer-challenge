@@ -8,7 +8,7 @@ public class BoardManager {
         resetBoard();
     }
 
-    private int boardSize = 3;
+    private int boardSize = 5;
     private final int[][] board = new int[boardSize][boardSize];
     private final HashMap<String, BoardPosition> boardPositions = new HashMap<>();
 
@@ -43,7 +43,9 @@ public class BoardManager {
 
     public void resetBoard() {
         ArrayList<Integer> defaultValuesList = new ArrayList<>();
-        IntStream.range(0, 9).forEach(defaultValuesList::add);
+        int totalBoardSize = this.boardSize * this.boardSize;
+
+        IntStream.range(0, totalBoardSize).forEach(defaultValuesList::add);
 
         iniatializeBoardPositions(defaultValuesList);
     }

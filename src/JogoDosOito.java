@@ -2,9 +2,9 @@ package src;
 
 import src.Managers.BoardManager;
 import src.Managers.BoardPosition;
+import src.Managers.GameManager;
 
-import java.awt.Font;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -13,14 +13,19 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class JogoDosOito extends JFrame implements KeyListener {
+
     private final BoardManager boardManager = new BoardManager();
+    private final GameManager gameManager = new GameManager(boardManager.getBoardSize());
     private final JButton[][] buttons = new JButton[boardManager.getBoardSize()][boardManager.getBoardSize()];
 
     public JogoDosOito() {
         super("Jogo dos Oito");
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(300, 300);
-        setLayout(new GridLayout(4, 3));
+        setSize(gameManager.getScreenWidth(), gameManager.getScreenHeight());
+        setLayout(new GridLayout(boardManager.getBoardSize() + 1, boardManager.getBoardSize()));
+
+        gameManager.startCouting();
 
         for (int i = 0; i < boardManager.getBoardSize(); i++) {
             for (int j = 0; j < boardManager.getBoardSize(); j++) {
@@ -35,14 +40,32 @@ public class JogoDosOito extends JFrame implements KeyListener {
 
         JButton restartButton = new JButton("Reiniciar");
         restartButton.addActionListener(e -> restartGame());
-        add(new JLabel(""));
-        add(restartButton);
-        add(new JLabel(""));
+        addRestartButton(restartButton);
 
         addKeyListener(this);
         setFocusable(true);
         updateBoard();
         setVisible(true);
+    }
+
+    private void addRestartButton(JButton restartButton) {
+        if (boardManager.getBoardSize() % 2 != 0) {
+            for (int i = 0; i < boardManager.getBoardSize() / 2; i++) {
+                add(new JLabel(""));
+            }
+            add(restartButton);
+            for (int i = 0; i < boardManager.getBoardSize() / 2; i++) {
+                add(new JLabel(""));
+            }
+        } else {
+            for (int i = 0; i < boardManager.getBoardSize() / 2; i++) {
+                add(new JLabel(""));
+            }
+            add(restartButton);
+            for (int i = 0; i < boardManager.getBoardSize() / 2 - 1; i++) {
+                add(new JLabel(""));
+            }
+        }
     }
 
     public void keyPressed(KeyEvent e) {
@@ -55,6 +78,8 @@ public class JogoDosOito extends JFrame implements KeyListener {
     }
 
     private void onClick(JButton buttonClicked) {
+        gameManager.addClick();
+
         var firstButtonPosition = boardManager.getBoardPosition(buttonClicked.getText());
 
         changeButtonsPositions(firstButtonPosition.getXPosition(), firstButtonPosition.getYPosition());
@@ -72,6 +97,7 @@ public class JogoDosOito extends JFrame implements KeyListener {
     private void gameFinished() {
         //Tela de vitória
         System.out.println("Game finished");
+        System.out.println("You finish with: " + gameManager.getClickQuantity() + " tries");
     }
 
     private void changeButtonsPositions(int buttonXPosition, int buttonYPosition) {
